@@ -10,7 +10,7 @@ public static class BoxEndpoints
         RouteGroupBuilder group = app.MapGroup("/api/boxes")
             .WithTags("Boxes");
 
-        group.MapGet("/{boxId}", GetCustomerById)
+        /*group.MapGet("/{boxId}", GetCustomerById)
             .WithName(nameof(GetCustomerById))
             .Produces<BoxResponse>(StatusCodes.Status200OK);
 
@@ -24,7 +24,7 @@ public static class BoxEndpoints
             .Produces<BoxResponse>(StatusCodes.Status204NoContent);
 
         group.MapDelete("/{boxId}", DeleteCustomer)
-            .Produces<BoxResponse>(StatusCodes.Status204NoContent);
+            .Produces<BoxResponse>(StatusCodes.Status204NoContent);*/
 
         return group;
     }
