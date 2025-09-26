@@ -2,7 +2,7 @@ name: nestflix
 
 services:
   api:
-    image: ${DOCKER_REGISTRY-}datalake-db-sync-app/api:${TAG:-latest}
+    image: ${DOCKER_REGISTRY-}nestflix/api:${TAG:-latest}
     build:
       context: .
       dockerfile: Api/Dockerfile
