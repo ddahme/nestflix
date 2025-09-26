@@ -15,11 +15,13 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 }
 
 const Landing = lazy(() => import("./Landing"));
+const Live = lazy(() => import("./Live"));
 
 render(
   () => (
     <Router>
       <Route path="/" component={Landing}></Route>
+      <Route path="/live" component={Live}></Route>
     </Router>
   ),
   root!

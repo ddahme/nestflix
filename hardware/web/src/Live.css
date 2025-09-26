@@ -1,0 +1,20 @@
+video {
+    display: block;
+    margin: 0 auto;
+    aspect-ratio: 1 / 1;
+}
+
+section:nth-child(2) {
+    padding-block: 1em;
+    padding-block-start: 2em;
+    padding-inline: 1em;
+
+    h1, h2 {
+        text-align: center;
+    }
+}
+
+small {
+    padding-block: 1em;
+    text-align: justify;
+}
