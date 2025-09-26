@@ -47,38 +47,69 @@ const Live = () => {
             <fieldset>
               <label>
                 Sind Eier im Nest?
+                <br />
                 <input
                   type="range"
                   min="0"
                   max="10"
                   step="1"
-                  list="countMarkers"
+                  list="eggCountMarkers"
                   value="0"
                 />
               </label>
+              <datalist id="eggCountMarkers">
+                <option value="0" label="0"></option>
+                <option value="1" label="1"></option>
+                <option value="2" label="2"></option>
+                <option value="3" label="3"></option>
+                <option value="4" label="4"></option>
+                <option value="5" label="5"></option>
+                <option value="6" label="6"></option>
+                <option value="7" label="7"></option>
+                <option value="8" label="8"></option>
+                <option value="9" label="9"></option>
+                <option value="10" label="10"></option>
+              </datalist>
+
               <label>
                 Wie viele davon sind geschlüpft?
+                <br />
                 <input
                   type="range"
                   min="0"
                   max="10"
                   step="1"
-                  list="countMarkers"
+                  list="hatchedMarkers"
                   value="0"
                 />
               </label>
+              <datalist id="hatchedMarkers">
+                <option value="0" label="0"></option>
+                <option value="1" label="1"></option>
+                <option value="2" label="2"></option>
+                <option value="3" label="3"></option>
+                <option value="4" label="4"></option>
+                <option value="5" label="5"></option>
+                <option value="6" label="6"></option>
+                <option value="7" label="7"></option>
+                <option value="8" label="8"></option>
+                <option value="9" label="9"></option>
+                <option value="10" label="10"></option>
+              </datalist>
+
               <label>
                 Wie viele davon sind wohlauf?
+                <br />
                 <input
                   type="range"
                   min="0"
                   max="10"
                   step="1"
-                  list="countMarkers"
+                  list="aliveMarkers"
                   value="0"
                 />
               </label>
-              <datalist id="countMarkers">
+              <datalist id="aliveMarkers">
                 <option value="0" label="0"></option>
                 <option value="1" label="1"></option>
                 <option value="2" label="2"></option>

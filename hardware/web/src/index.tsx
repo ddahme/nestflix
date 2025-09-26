@@ -4,7 +4,7 @@ import { Route, Router } from "@solidjs/router";
 import { lazy } from "solid-js";
 import "solid-devtools";
 import "@picocss/pico";
-import './index.css';
+import "./index.css";
 
 const root = document.getElementById("root");
 

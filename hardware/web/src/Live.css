@@ -18,3 +18,16 @@ small {
     padding-block: 1em;
     text-align: justify;
 }
+
+datalist {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-left: .5em;
+  margin-top: -1.5em;
+  margin-bottom: 1.5em;
+}
+
+option {
+  padding: 0;
+}
