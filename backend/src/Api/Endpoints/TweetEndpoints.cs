@@ -8,14 +8,15 @@ public static class TweetEndpoints
         RouteGroupBuilder group = app.MapGroup("/api/boxes/{boxId:guid}/tweets")
             .WithTags("Tweets");
 
-        group.MapGet("/{tweetId}", GetCustomerById)
-            .WithName(nameof(GetCustomerById))
+        group.MapGet("/{tweetId}", GetTweetById)
+            .WithName(nameof(GetTweetById))
+            .Produces<TweetEntity>(StatusCodes.Status200OK);
+
+        group.MapGet("/", DeleteTweet)
+            .WithName(nameof(DeleteTweet))
             .Produces<TweetResponse>(StatusCodes.Status200OK);
 
-        group.MapGet("/", GetCustomerIds)
-            .Produces<IEnumerable<TweetResponse>>(StatusCodes.Status200OK);
-
-        group.MapPost("/", CreateCustomer)
+        group.MapPost("/", AddTweet)
             .Produces<TweetResponse>(StatusCodes.Status201Created);
 
         return group;

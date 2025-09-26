@@ -17,7 +17,7 @@ builder.Services.AddDbContextFactory<NestflixDbContext>(options =>
 builder.Services.AddScoped<ITweetRepository, TweetRepository>();
 builder.Services.AddScoped<IBoxRepository, BoxRepository>();
 builder.Services.AddScoped<IBoxService>();
-builder.Services.AddScoped<ITweetService>();
+builder.Services.AddScoped<ITweetService, ITweetService>();
 
 var app = builder.Build();
 

@@ -14,14 +14,22 @@ public sealed class TweetRepository(IDbContextFactory<NestflixDbContext> dbConte
         await context.SaveChangesAsync();
     }
 
-    public Task DeleteTweet(TweetEntity entity)
+    public async Task DeleteTweet(TweetEntity entity)
     {
-        throw new NotImplementedException();
+        await using var context = await dbContextFactory.CreateDbContextAsync();
+        await context.Attach(entity);
+        await context.Tweets.Remove();
+        await context.SaveChangesAsync();
+
     }
 
     public Task<TweetEntity> GetTweetById(Guid id)
     {
-        throw new NotImplementedException();
+        await using var db = await _dbContextFactory.CreateDbContextAsync();
+
+        var tweet = await db.Tweets.FirstOrDefaultAsync(t => t.Id == id);
+
+        return tweet is null ? throw new KeyNotFoundException($"Tweet with id {id} was not found.") : tweet;
     }
 
     public async Task<TweetEntity?> GetLatestTweet(Guid boxId)
