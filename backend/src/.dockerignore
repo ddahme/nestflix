@@ -1,0 +1,16 @@
+# Ignore build outputs so Docker layer cache restore isn't overwritten by host artifacts
+**/bin/
+**/obj/
+
+# Common local/dev folders
+.vs/
+.idea/
+*.user
+*.swp
+
+# Git
+.git
+.gitignore
+
+# Others
+Dockerfile.*
