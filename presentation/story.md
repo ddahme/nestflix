@@ -1,5 +1,27 @@
 # Story
 
+## Feedback Pitch
+
+Ein normaler Nistkasten ist langweilig.
+Fertige, smarte Kästen kosten viel Geld und brauchen Infrastruktur (WLAN, Strom, etc)
+Gibt es kein niederschwelliges Angebot, mit dem man sich ab und zu über seinen Nistkasten informieren kann?
+
+--> Hier setzen wir an!
+
+Wir fördern spielerisch das Interesse an MINT und Naturschutz, durch offene Anleitungen zum Bauen und "Betreiben" von schlauen Nistkästen.
+Wir bieten nebenher, ohne nennenswerten Mehraufwand die Möglichkeit an Citizen Science Projekten teilzunehmen.
+
+Daten wie diese, über Zeit aggregiert, dienen Vereinen und Institutionen (wie NABU, LWL) aber auch Forschenden eine einzigartige Grundlage (Verbreitung spezieller Arten).
+Citizen Science Projekte können viel länger laufen, als es normale Forschungsprojekte tun (Förderdauer, keine laufenden Kosten).
+
+Münster?
+Wir setzen uns bereits viel für die Themen rund um Naturschutz und Artenvielfalt ein.
+Daten bieten die Möglichkeit die Wirksamkeit der Maßnahmen zu beurteilen.
+Durch die Vielzahl an Bürgerbeteiligungsprojekten ist außerdem klar:
+Münster hat das Potenzial, Keimzelle für diese Art Projekte zu sein und es in weitere Kommunen (Leezenflow) zu tragen.
+
+Wir bauen keine technische Revolution, sondern einfach ein Stück Alltag erlebbarer zu machen.
+
 ## Why?
 
 - Educational
@@ -26,9 +48,6 @@
 Ausgangslage:
 
 - Ich will eins aufhängen und gerne reinschauen können
-
-a
-
 - Eigeninitiative fördern
 - Normale die nichts können -> langweilig
 - Man will etwas besondere -> Oft sehr teuer (~200€)
