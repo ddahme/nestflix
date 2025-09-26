@@ -13,6 +13,8 @@
 		<PackageReference Include="Microsoft.Extensions.Telemetry" />
 		<PackageReference Include="Microsoft.Identity.Web" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />
 	</ItemGroup>
 
 </Project>
