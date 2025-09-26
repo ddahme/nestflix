@@ -1,14 +1,20 @@
-﻿namespace Api.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-public sealed class TweetEntity
+namespace Api.Entities;
+
+public class TweetEntity
 {
-    public required Guid BoxId { get; init; }
-    public required Uri SasUri { get; init; }
-    public required DateTime UploadedAt { get; init; }
-    public required bool IsOccupied { get; init; }
-    public string? BirdType { get; init; }
-    public int? EggCount { get; init; }
-    public int? HatchedCount { get; init; }
-    public int? DeadCount { get; init; }
-    public required string Description { get; init; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public Guid Id { get; set; }
+    public Guid BoxId { get; set; }
+    public string BlobName { get; set; }
+    public DateTime UploadedAt { get; set; }
+    public bool IsOccupied { get; set; }
+    public string? BirdType { get; set; }
+    public int? EggCount { get; set; }
+    public int? HatchedCount { get; set; }
+    public int? DeadCount { get; set; }
+    public string Description { get; set; } = string.Empty;
+
+    public virtual BoxEntity Box { get; set; } = null!;
 }

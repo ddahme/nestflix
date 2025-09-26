@@ -16,4 +16,6 @@ public sealed class BoxEntity
     public DateTime CreatedAt { get; set; }
     public bool IsArchived { get; set; } = false;
     public Guid? LatestTweet { get; set; }
+
+    public ICollection<TweetEntity> Tweets { get; set; } = default!;
 }

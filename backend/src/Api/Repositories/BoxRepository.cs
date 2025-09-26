@@ -9,14 +9,19 @@ namespace Api.Repositories;
 
 public sealed class BoxRepository(IDbContextFactory<NestflixDbContext> dbContextFactory) : IBoxRepository
 {
-    public Task AddBox(BoxEntity entity)
+    public async Task AddBox(BoxEntity entity)
     {
-        throw new NotImplementedException();
+        await using var context = await dbContextFactory.CreateDbContextAsync();
+        await context.Boxes.AddAsync(entity);
+        await context.SaveChangesAsync();
     }
 
-    public Task ArchiveBox(BoxEntity entity)
+    public async Task ArchiveBox(BoxEntity entity)
     {
-        throw new NotImplementedException();
+        await using var context = await dbContextFactory.CreateDbContextAsync();
+        entity.IsArchived = true;
+        context.Boxes.Update(entity);
+        await context.SaveChangesAsync();
     }
 
     public Task<BoxEntity?> GetBox(Guid id)
