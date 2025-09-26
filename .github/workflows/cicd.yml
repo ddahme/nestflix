@@ -73,7 +73,7 @@ jobs:
   deploy_docker_artifacts:
     name: Deploy Docker Artifacts
     runs-on: ubuntu-latest
-    needs: [build_docker_artifacts, integration]
+    needs: [build_docker_artifacts]
     if: github.event_name != 'pull_request'
     steps:
       - name: Checkout
