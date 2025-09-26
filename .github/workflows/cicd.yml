@@ -21,11 +21,15 @@ jobs:
         with:
           dotnet-version: 9.0.x
 
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+
       - name: Install dependencies
-        run: dotnet restore ${{ github.workspace }}/backend/src/nestflix.slnx
+        run: dotnet restore backend/src/nestflix.slnx
 
       - name: Build Api
-        run: dotnet build ${{ github.workspace }}/backend/src/nestflix.slnx -c Release
+        run: dotnet build backend/src/nestflix.slnx -c Release
 
   build_docker_artifacts:
     name: Build Docker Artifacts
