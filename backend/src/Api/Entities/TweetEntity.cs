@@ -9,7 +9,7 @@ public class TweetEntity
     public Guid BoxId { get; set; }
     public string BlobName { get; set; }
     public DateTime UploadedAt { get; set; }
-    public bool IsOccupied { get; set; }
+    public bool? IsOccupied { get; set; }
     public string? BirdType { get; set; }
     public int? EggCount { get; set; }
     public int? HatchedCount { get; set; }

@@ -1,4 +1,5 @@
 using Api.Database;
+using Api.Endpoints;
 using Api.Repositories;
 using Api.Services;
 using Microsoft.EntityFrameworkCore;
@@ -16,10 +17,12 @@ builder.Services.AddDbContextFactory<NestflixDbContext>(options =>
 
 builder.Services.AddScoped<ITweetRepository, TweetRepository>();
 builder.Services.AddScoped<IBoxRepository, BoxRepository>();
-builder.Services.AddScoped<IBoxService>();
-builder.Services.AddScoped<ITweetService, ITweetService>();
+builder.Services.AddScoped<IBoxService, BoxService>();
+builder.Services.AddScoped<ITweetService, TweetService>();
 
 var app = builder.Build();
+
+app.MapBoxEndpoints();
 
 if (app.Environment.IsDevelopment())
 {

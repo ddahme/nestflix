@@ -1,11 +1,13 @@
-﻿using Api.DTOs;
+﻿using Api.Clients;
+using Api.DTOs;
 using Api.Entities;
 using Api.Mapper;
 using Api.Repositories;
+using Azure.Storage.Sas;
 
 namespace Api.Services;
 
-public sealed class BoxService(IBoxRepository repository, ITweetRepository tweetRepository) : IBoxService
+public sealed class BoxService(IBoxRepository repository, ITweetRepository tweetRepository, IBlobClient blobClient) : IBoxService
 {
 
     public async Task CreateBox(CreateBoxRequest request)
@@ -30,16 +32,37 @@ public sealed class BoxService(IBoxRepository repository, ITweetRepository tweet
     {
         BoxEntity entity = await repository.GetBoxElseThrow(id);
         TweetEntity? latestTweet = await tweetRepository.GetLatestTweet(id);
-        return entity.ToBoxResponse(latestTweet?.);
+        TweetResponse? latestTweetResponse = null;
+        if (latestTweet is not null)
+        {
+            Uri sasUri = blobClient.GenerateSaSUri(latestTweet.BlobName, BlobContainerSasPermissions.Read);
+            latestTweetResponse = latestTweet.ToTweetResponse(sasUri);
+        }
+        return entity.ToBoxResponse(latestTweetResponse);
     }
 
-    public Task<IEnumerable<BoxResponse>> GetBoxesInDistance(double longitude, double latitude, int radiusInMeter)
+    public async Task<IEnumerable<BoxResponse>> GetBoxesInDistance(GetBoxesInDistanceRequest request)
     {
-        throw new NotImplementedException();
+        IEnumerable<BoxEntity> boxes = await repository.GetBoxesInDistance(request.Point.ToPoint(), request.DistanceInMeters, request.Page);
+        var boxResponseTasks = boxes.Select(async b =>
+        {
+            TweetEntity? latestTweet = await tweetRepository.GetLatestTweet(b.Id);
+            TweetResponse? latestTweetResponse = null;
+            if (latestTweet is not null)
+            {
+                Uri sasUri = blobClient.GenerateSaSUri(latestTweet.BlobName, BlobContainerSasPermissions.Read);
+                latestTweetResponse = latestTweet.ToTweetResponse(sasUri);
+            }
+            return b.ToBoxResponse(latestTweetResponse);
+        });
+        BoxResponse[] boxResponses = await Task.WhenAll(boxResponseTasks);
+        return boxResponses;
     }
 
-    public Task UpdateBox(Guid id, UpdateBoxRequest request)
+    public async Task UpdateBox(Guid id, UpdateBoxRequest request)
     {
-        throw new NotImplementedException();
+        BoxEntity boxEntity = await repository.GetBoxElseThrow(id);
+        boxEntity.Name = request.Name;
+        await repository.UpdateBox(boxEntity);
     }
 }
