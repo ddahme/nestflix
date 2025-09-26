@@ -11,5 +11,5 @@ public interface IBoxRepository
     Task ArchiveBox(BoxEntity entity);
     Task<BoxEntity?> GetBox(Guid id);
     Task<BoxEntity> GetBoxElseThrow(Guid id);
-    Task<IEnumerable<BoxEntity>> GetBoxesInDistance(Point point, int radiusInMeter, PageRequestDto page);
+    Task<IEnumerable<BoxEntity>> GetBoxesInDistance(Point point, double radiusInMeter, PageRequestDto page);
 }

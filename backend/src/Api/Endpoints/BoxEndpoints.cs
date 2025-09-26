@@ -1,5 +1,7 @@
 ﻿using Api.DTOs;
+using Api.Pagination;
 using Api.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Endpoints;
 
@@ -7,7 +9,7 @@ public static class BoxEndpoints
 {
     public static RouteGroupBuilder MapBoxEndpoints(this WebApplication app)
     {
-        RouteGroupBuilder group = app.MapGroup("/api/box")
+        RouteGroupBuilder group = app.MapGroup("/api/boxes")
             .WithTags("Boxes");
 
         group.MapGet("/{boxId}", GetBoxById)
@@ -43,11 +45,18 @@ public static class BoxEndpoints
     private static async Task<IResult> CreateBox(CreateBoxRequest request, IBoxService boxService)
     {
         await boxService.CreateBox(request);
+
         return Results.Created();
     }
 
-    private static async Task<IResult> GetBoxesInDistance([AsParameters] GetBoxesInDistanceRequest request, IBoxService boxService)
+    private static async Task<IResult> GetBoxesInDistance([AsParameters] PointDto point, [AsParameters] PageRequestDto page, [FromQuery] double distanceInMeters, IBoxService boxService)
     {
+        GetBoxesInDistanceRequest request = new()
+        {
+            Point = point,
+            DistanceInMeters = distanceInMeters,
+            Page = page
+        };
         return Results.Ok(await boxService.GetBoxesInDistance(request));
     }
 

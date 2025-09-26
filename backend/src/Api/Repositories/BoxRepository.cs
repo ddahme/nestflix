@@ -7,7 +7,7 @@ using NetTopologySuite.Geometries;
 
 namespace Api.Repositories;
 
-public sealed class BoxRepository(IDbContextFactory<NestflixDbContext> dbContextFactory) : IBoxRepository
+public sealed class BoxRepository(ILogger<BoxRepository> logger, IDbContextFactory<NestflixDbContext> dbContextFactory) : IBoxRepository
 {
     public async Task AddBox(BoxEntity entity)
     {
@@ -35,12 +35,13 @@ public sealed class BoxRepository(IDbContextFactory<NestflixDbContext> dbContext
         return await GetBox(id) ?? throw new NotFoundException();
     }
 
-    public async Task<IEnumerable<BoxEntity>> GetBoxesInDistance(Point point, int radiusInMeter, PageRequestDto page)
+    public async Task<IEnumerable<BoxEntity>> GetBoxesInDistance(Point point, double radiusInMeter, PageRequestDto page)
     {
         await using var context = await dbContextFactory.CreateDbContextAsync();
+
         return await context.Boxes
             .Where(b => !b.IsArchived)
-            .Where(b => b.Point.IsWithinDistance(point, radiusInMeter))
+            .Where(b => b.Point.Distance(point) <= radiusInMeter)
             .OrderBy(b => b.Point.Distance(point))
             .Skip(page.Offest())
             .Take(page.Size)

@@ -22,7 +22,7 @@ public sealed record UpdateBoxRequest
 public sealed record GetBoxesInDistanceRequest
 {
     public required PointDto Point { get; set; }
-    public required int DistanceInMeters { get; set; }
+    public required double DistanceInMeters { get; set; }
     public PageRequestDto Page { get; set; } = new();
 }
 
