@@ -25,6 +25,10 @@ public sealed class TweetRepository(IDbContextFactory<NestflixDbContext> dbConte
 
     public Task<TweetEntity> GetTweetById(Guid id)
     {
-        
+        await using var db = await _dbContextFactory.CreateDbContextAsync();
+
+        var tweet = await db.Tweets.FirstOrDefaultAsync(t => t.Id == id);
+
+        return tweet is null ? throw new KeyNotFoundException($"Tweet with id {id} was not found.") : tweet;
     }
 }
