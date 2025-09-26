@@ -19,17 +19,13 @@ jobs:
       - name: Install .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0.x
-
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
+          dotnet-version: 9.x
 
       - name: Install dependencies
-        run: dotnet restore backend/src/nestflix.slnx
+        run: dotnet restore backend/src/Nestflix.slnx
 
       - name: Build Api
-        run: dotnet build backend/src/nestflix.slnx -c Release
+        run: dotnet build backend/src/Nestflix.slnx -c Release
 
   build_docker_artifacts:
     name: Build Docker Artifacts
@@ -44,7 +40,7 @@ jobs:
         uses: docker/setup-compose-action@v1
 
       - name: Build Docker Images
-        working-directory: "${{ github.workspace }}/backend/src/"
+        working-directory: "backend/src/"
         env:
           DOCKER_BUILDKIT: 1
           DOCKER_REGISTRY: ${{ vars.ACR_URL }}/
