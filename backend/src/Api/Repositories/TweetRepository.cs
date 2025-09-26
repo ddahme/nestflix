@@ -23,4 +23,13 @@ public sealed class TweetRepository(IDbContextFactory<NestflixDbContext> dbConte
     {
         throw new NotImplementedException();
     }
+
+    public async Task<TweetEntity?> GetLatestTweet(Guid boxId)
+    {
+        await using var context = await dbContextFactory.CreateDbContextAsync();
+        return await context.Tweets
+            .Where(t => t.BoxId == boxId)
+            .OrderByDescending(t => t.UploadedAt)
+            .FirstOrDefaultAsync();
+    }
 }

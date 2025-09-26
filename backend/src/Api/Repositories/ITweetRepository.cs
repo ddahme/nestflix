@@ -7,4 +7,5 @@ public interface ITweetRepository
     Task AddTweet(TweetEntity entity);
     Task DeleteTweet(TweetEntity entity);
     Task<TweetEntity> GetTweetById(Guid id);
+    Task<TweetEntity?> GetLatestTweet(Guid boxId);
 }
