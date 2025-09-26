@@ -1,0 +1,10 @@
+name: nestflix
+
+services:
+  api:
+    image: ${DOCKER_REGISTRY-}datalake-db-sync-app/api:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: Api/Dockerfile
+    ports:
+      - "8080:8080"
