@@ -2,9 +2,9 @@ name: CI/CD
 
 on:
   push:
-    branches: ["ai"]
+    branches: ["main"]
   pull_request:
-    branches: ["ai"]
+    branches: ["main"]
 
 jobs:
   build:
@@ -50,7 +50,7 @@ jobs:
 
       - name: Tag Docker Images
         run: |
-          API_IMAGE=${{ vars.ACR_URL }}/netflix/api
+          API_IMAGE=${{ vars.ACR_URL }}/nestflix/api
 
           VERSION=${{ vars.MAJOR_VERSION }}.${{ vars.MINOR_VERSION }}.${{ github.run_number }}
 
@@ -58,7 +58,7 @@ jobs:
 
       - name: Save Docker Images
         run: |
-          API_IMAGE=${{ vars.ACR_URL }}/netflix/api
+          API_IMAGE=${{ vars.ACR_URL }}/nestflix/api
 
           docker save -o nestflix_api.tar $API_IMAGE
 
@@ -101,7 +101,7 @@ jobs:
           docker load -i nestflix_api.tar
 
       - name: Push latest Docker Images
-        working-directory: "${{ github.workspace }}/src/"
+        working-directory: "${{ github.workspace }}/backend/src/"
         env:
           DOCKER_BUILDKIT: 1
           DOCKER_REGISTRY: ${{ vars.ACR_URL }}/
@@ -109,7 +109,7 @@ jobs:
           docker compose -f docker-compose.yml push
 
       - name: Push Docker Images with Version
-        working-directory: "${{ github.workspace }}/src/"
+        working-directory: "${{ github.workspace }}/backend/src/"
         env:
           DOCKER_BUILDKIT: 1
           DOCKER_REGISTRY: ${{ vars.ACR_URL }}/
@@ -131,6 +131,6 @@ jobs:
       - name: Deploy Api Image to Container App
         uses: azure/container-apps-deploy-action@v1
         with:
-          imageToDeploy: ${{ vars.ACR_URL }}/netflix/api:${{ vars.MAJOR_VERSION }}.${{ vars.MINOR_VERSION }}.${{ github.run_number }}
+          imageToDeploy: ${{ vars.ACR_URL }}/nestflix/api:${{ vars.MAJOR_VERSION }}.${{ vars.MINOR_VERSION }}.${{ github.run_number }}
           resourceGroup: ${{ vars.RESOURCE_GROUP }}
           containerAppName: ${{ vars.CONTAINER_APP_NAME }}
