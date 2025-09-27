@@ -68,7 +68,9 @@
 				color: #f9fafb;
 				box-shadow: 0 18px 40px rgba(15, 23, 42, 0.65);
 				border: 1px solid rgba(148, 163, 184, 0.12);
-				width: 320px;
+				width: auto;
+				min-width: min(280px, calc(100vw - 64px));
+				max-width: min(380px, calc(100vw - 48px));
 				font-family: "Segoe UI", "Inter", sans-serif;
 			}
 			.box-popup .mapboxgl-popup-tip {
@@ -79,6 +81,17 @@
 				display: flex;
 				flex-direction: column;
 				gap: 18px;
+				cursor: grab;
+				max-height: min(70vh, 500px);
+				overflow-y: auto;
+				touch-action: none;
+			}
+			.popup-card--dragging {
+				cursor: grabbing;
+				user-select: none;
+			}
+			.popup-card--dragging * {
+				cursor: inherit;
 			}
 			.popup-card__header {
 				display: flex;
@@ -242,7 +255,7 @@
 				opacity: 0.8;
 			}
 		</style>
-		<script type="module" crossorigin src="/assets/index-e981cc03.js"></script>
+		<script type="module" crossorigin src="/assets/index-1559586c.js"></script>
 	</head>
 	<body>
 		<div id="map"></div>
