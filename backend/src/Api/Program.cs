@@ -14,6 +14,7 @@ using Microsoft.Extensions.Azure;
 using OpenAI.Chat;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,10 +66,12 @@ builder.Services.AddSingleton(provider =>
     return blobContainerClient;
 });
 
-AzureKeyCredential credential = new(builder.Configuration["AZURE_OPENAI_KEY"] ?? throw new InvalidOperationException("Missing AZURE_OPENAI_KEY"));
-AzureOpenAIClient azureClient = new(new Uri(builder.Configuration["AZURE_OPENAI_ENDPOINT"] ?? throw new InvalidOperationException("Missing AZURE_OPENAI_ENDPOINT")), credential);
-ChatClient chatClient = azureClient.GetChatClient("gpt-4");
-builder.Services.AddSingleton(chatClient);
+ApiKeyServiceClientCredentials apiKeyServiceClientCredentials = new (builder.Configuration["AZURE_OPENAI_KEY"] ?? throw new InvalidOperationException("Missing AZURE_OPENAI_KEY"));
+CustomVisionPredictionClient customVisionPredictionClient = new(apiKeyServiceClientCredentials)
+{
+    Endpoint = "https://nestflixai-prediction.cognitiveservices.azure.com/"
+};
+builder.Services.AddSingleton(customVisionPredictionClient);
 
 builder.Services.AddSingleton<IAiService, AiService>();
 builder.Services.AddScoped<ITweetRepository, TweetRepository>();
