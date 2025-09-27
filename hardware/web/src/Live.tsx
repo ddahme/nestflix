@@ -1,37 +1,107 @@
 import { createSignal, Show } from "solid-js";
 import "./Live.css";
 
+const BASE_URL =
+  "https://ca-api.livelymeadow-be846269.germanywestcentral.azurecontainerapps.io/";
+
+const sendTweet = async (tweet: {
+  boxId: string;
+  imageBase64: string;
+  isOccupied: boolean;
+  birdType: string;
+  eggCount: number;
+  hatchedCount: number;
+  deadCount: number;
+  description: string;
+}) => {
+  // await fetch(`${BASE_URL}api/boxes/${tweet.boxId}/tweets`, {
+  //   method: "POST",
+  //   body: JSON.stringify(tweet),
+  // });
+  await new Promise((resolve) => window.setTimeout(resolve, 4_000));
+};
+
 const Live = () => {
-  const [formSent, setFormSent] = createSignal(false);
+  const [formState, setFormState] = createSignal<"unsent" | "waiting" | "sent">(
+    "unsent"
+  );
+  const [isOccupied, setIsOccupied] = createSignal(false);
+  const [birdType, setBirdType] = createSignal("");
+  const [eggCount, setEggCount] = createSignal(0);
+  const [hatchedCount, setHatchedCount] = createSignal(0);
+  const [deadCount, setDeadCount] = createSignal(0);
+  const [description, setDescription] = createSignal("");
 
-  const handleSubmitClick = (ev: MouseEvent) => {
+  let imgRef: HTMLImageElement | undefined;
+
+  const handleSubmitClick = async (ev: MouseEvent) => {
     ev.preventDefault();
+    setFormState("waiting");
+    try {
+      let imgBase64 = "";
+      if (imgRef) {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = imgRef.naturalWidth;
+        canvas.height = imgRef.naturalHeight;
+        try {
+          ctx!.drawImage(imgRef, 0, 0);
+          imgBase64 = canvas.toDataURL("image/png");
+        } catch {}
+      }
 
-    setFormSent(true);
+      await sendTweet({
+        boxId: "01998a50-83b5-7ab1-9a7d-427310422c91",
+        imageBase64: imgBase64,
+        isOccupied: isOccupied(),
+        birdType: birdType(),
+        eggCount: eggCount(),
+        hatchedCount: hatchedCount(),
+        deadCount: deadCount(),
+        description: description(),
+      });
+      setFormState("sent");
+    } catch (e) {
+      console.error(e);
+      setFormState("sent");
+    }
   };
 
   return (
     <main class="container" style="padding-inline: 0;">
       <section>
-        <img src="/stream" alt="Livestream aus dem Nistkasten" />
+        <img
+          src="/birdie2.jpeg"
+          alt="Livestream aus dem Nistkasten"
+          ref={imgRef}
+        />
       </section>
       <section>
-        <Show when={!formSent()}>
+        <Show when={formState() === "unsent"}>
           <h2>Was passiert gerade?</h2>
           <form>
             <fieldset>
               <legend>Ist jemand Zuhause?</legend>
               <label>
-                <input type="checkbox" name="isOccupied" />
+                <input
+                  type="checkbox"
+                  name="isOccupied"
+                  onChange={(ev) => setIsOccupied(ev.target.value === "true")}
+                />
                 Das Nest ist bewohnt
               </label>
             </fieldset>
 
             <fieldset>
-              <select name="birdType" aria-label="Welcher Vogel lebt hier?">
+              <select
+                name="birdType"
+                aria-label="Welcher Vogel lebt hier?"
+                onChange={(ev) => setBirdType(ev.target.value)}
+              >
                 <option selected disabled value="">
                   Welcher Vogel lebt hier?
                 </option>
+                <option>Amsel</option>
                 <option>Bachstelze</option>
                 <option>Blaumeise</option>
                 <option>Buchfink</option>
@@ -55,6 +125,9 @@ const Live = () => {
                   step="1"
                   list="eggCountMarkers"
                   value="0"
+                  onChange={(ev) =>
+                    setEggCount(Number.parseInt(ev.target.value))
+                  }
                 />
               </label>
               <datalist id="eggCountMarkers">
@@ -81,6 +154,9 @@ const Live = () => {
                   step="1"
                   list="hatchedMarkers"
                   value="0"
+                  onChange={(ev) =>
+                    setHatchedCount(Number.parseInt(ev.target.value))
+                  }
                 />
               </label>
               <datalist id="hatchedMarkers">
@@ -98,7 +174,7 @@ const Live = () => {
               </datalist>
 
               <label>
-                Wie viele davon sind wohlauf?
+                Wie viele davon sind nicht wohlauf?
                 <br />
                 <input
                   type="range"
@@ -107,6 +183,9 @@ const Live = () => {
                   step="1"
                   list="aliveMarkers"
                   value="0"
+                  onChange={(ev) =>
+                    setDeadCount(Number.parseInt(ev.target.value))
+                  }
                 />
               </label>
               <datalist id="aliveMarkers">
@@ -128,6 +207,7 @@ const Live = () => {
                 name="description"
                 placeholder="Gibt es sonst noch etwas Interessantes?"
                 aria-label="Description for further information"
+                onChange={(ev) => setDescription(ev.target.value)}
               ></textarea>
             </fieldset>
             <button type="submit" onclick={handleSubmitClick}>
@@ -142,14 +222,23 @@ const Live = () => {
           </form>
         </Show>
 
-        <Show when={formSent()}>
-          <h1>✅</h1>
+        <Show when={formState() === "waiting"}>
+          <h1>⬆️</h1>
           <h2>Danke für deine Hilfe!</h2>
           <small>
             Sobald du die Verbindung zum Nistkasten trennst, werden die Daten
             zur openBirdMap hochgeladen. Forschende und Interessierte aus aller
             Welt können diese Daten dann nutzen, um Maßnahmen zur Stärkung der
             Artenvielfalt zu verfolgen und zu verbessern.
+          </small>
+        </Show>
+
+        <Show when={formState() === "sent"}>
+          <h1>✅</h1>
+          <h2>Danke für deine Hilfe!</h2>
+          <small>
+            Dein Beitrag wurde zur openBirdMap übertragen und ist nun online
+            verfügbar.
           </small>
         </Show>
       </section>

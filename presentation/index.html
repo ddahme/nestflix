@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+		<title>NESTFLIX - Smart Nistkästen für Münster</title>
 
 		<link rel="stylesheet" href="dist/reset.css">
 		<link rel="stylesheet" href="dist/reveal.css">
@@ -12,12 +12,245 @@
 
 		<!-- Theme used for syntax highlighted code -->
 		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+		
+		<style>
+			.reveal .slides section .fragment.highlight-current-red.current-fragment {
+				color: #ef4444;
+			}
+			.reveal h1, .reveal h2, .reveal h3 {
+				color: #ef4444;
+			}
+			.reveal .progress {
+				color: #ef4444;
+			}
+			.nestflix-logo {
+				font-size: 3em;
+				color: #ef4444;
+				text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+			}
+			.pitch-box {
+				background: linear-gradient(135deg, #2e1a1a, #4a2d2d);
+				border-left: 5px solid #ef4444;
+				padding: 20px;
+				margin: 20px 0;
+				border-radius: 10px;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+			}
+			.stats-grid {
+				display: grid;
+				grid-template-columns: repeat(2, 1fr);
+				gap: 20px;
+				margin: 20px 0;
+			}
+			.stat-item {
+				background: rgba(239, 68, 68, 0.1);
+				border: 1px solid rgba(239, 68, 68, 0.3);
+				padding: 15px;
+				border-radius: 8px;
+				text-align: center;
+				backdrop-filter: blur(10px);
+			}
+			.red-text {
+				color: #ef4444;
+				font-weight: bold;
+			}
+			.reveal .slides section {
+				color: #ffffff;
+			}
+		</style>
 	</head>
 	<body>
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
+				<!-- Title Slide -->
+				<section data-background-color="#1f1111">
+					<h1 class="nestflix-logo">🐦 NESTFLIX</h1>
+					<h2>Smart Nistkästen für Münster</h2>
+					<p><em>Naturschutz erlebbar machen durch DIY-Smart-Nistkästen mit Live-Streaming</em></p>
+					<br>
+					<p><small>Hackathon Abschlusspitch | September 2025</small></p>
+				</section>
+
+				<!-- Problem Statement -->
+				<section>
+					<h2>Das Problem</h2>
+					<div class="fragment">
+						<h3>🏠 Normale Nistkästen sind langweilig</h3>
+						<p>Einmal aufgehängt → vergessen</p>
+					</div>
+					<div class="fragment">
+						<h3>💰 Smarte Lösungen sind teuer</h3>
+						<p>~200€ + Infrastruktur (WLAN, Strom)</p>
+					</div>
+					<div class="fragment">
+						<h3>❓ Unbekannte Wirksamkeit</h3>
+						<p>Werden die Nistkästen überhaupt genutzt?</p>
+					</div>
+				</section>
+
+				<!-- Our Solution -->
+				<section>
+					<h2>Unsere Lösung</h2>
+					<div class="pitch-box">
+						<h3>NESTFLIX macht Naturschutz erlebbar!</h3>
+						<p>DIY-Smart-Nistkästen + Live-Streaming + Citizen Science = 🎯</p>
+					</div>
+					<div class="fragment">
+						<p>✅ Niederschwellig & Open Source</p>
+						<p>✅ Keine Infrastruktur nötig</p>
+						<p>✅ Community-getrieben</p>
+						<p>✅ Wissenschaftlich wertvoll</p>
+					</div>
+				</section>
+
+				<!-- Innovation -->
+				<section>
+					<h2>Innovation</h2>
+					<div class="stats-grid">
+						<div class="stat-item fragment">
+							<h3>🔧 DIY-Freundlich</h3>
+							<p>Offene Bauanleitung<br>Keine Vorkenntnisse nötig</p>
+						</div>
+						<div class="stat-item fragment">
+							<h3>📡 IoT-Technology</h3>
+							<p>ESP32 + Kamera<br>Kostengünstig & verfügbar</p>
+						</div>
+						<div class="stat-item fragment">
+							<h3>🔬 Citizen Science</h3>
+							<p>Automatische Datenweiterleitung<br>an NABU & Forschung</p>
+						</div>
+						<div class="stat-item fragment">
+							<h3>🌐 Open Source</h3>
+							<p>Vollständig nachnutzbar<br>Modulare Architektur</p>
+						</div>
+					</div>
+				</section>
+
+				<!-- Technical Architecture -->
+				<section>
+					<h2>Technische Umsetzung</h2>
+					<div class="fragment">
+						<h3>🏗️ Hardware Stack</h3>
+						<ul>
+							<li><span class="red-text">ESP32</span> - Microcontroller</li>
+							<li><span class="red-text">Kamera</span> - Live-Streaming</li>
+							<li><span class="red-text">Sensoren</span> - Temperatur, Bewegung</li>
+						</ul>
+					</div>
+					<div class="fragment">
+						<h3>💻 Software Stack</h3>
+						<ul>
+							<li><span class="red-text">Backend</span> - .NET 8 API</li>
+							<li><span class="red-text">Frontend</span> - React + TypeScript</li>
+							<li><span class="red-text">Hardware</span> - C++ für ESP32</li>
+						</ul>
+					</div>
+				</section>
+
+				<!-- Live Demo Mockup -->
+				<section data-background-color="#000">
+					<h2 style="color: #ef4444;">Live Demo</h2>
+					<div style="background: #2d1f1f; border: 2px solid #ef4444; padding: 20px; border-radius: 10px; margin: 20px;">
+						<h3 style="color: #ef4444;">NESTFLIX Dashboard</h3>
+						<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+							<div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); padding: 15px; border-radius: 8px;">
+								<h4 style="color: #ef4444;">📹 Live Stream</h4>
+								<div style="background: #111827; height: 120px; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: #ef4444; border: 1px solid #ef4444;">
+									🐦 Live Feed Active
+								</div>
+							</div>
+							<div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); padding: 15px; border-radius: 8px;">
+								<h4 style="color: #ef4444;">📊 Statistiken</h4>
+								<p style="color: white;"><strong>Aktive Kästen:</strong> 42</p>
+								<p style="color: white;"><strong>Vogelarten:</strong> 8</p>
+								<p style="color: white;"><strong>Heute besucht:</strong> 23</p>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- Impact & Benefits -->
+				<section>
+					<h2>Impact & Mehrwert</h2>
+					<div class="fragment">
+						<h3>🎓 Bildung</h3>
+						<p>Spielerisches Lernen • MINT-Förderung • Naturschutz-Interesse</p>
+					</div>
+					<div class="fragment">
+						<h3>🔬 Forschung</h3>
+						<p>Langzeit-Datensammlung • Artenschutz • Wirksamkeitsmessung</p>
+					</div>
+					<div class="fragment">
+						<h3>🏙️ Stadt Münster</h3>
+						<p>Vorreiter für digitalen Naturschutz • StadtGrün Gold-Label • Export in andere Kommunen</p>
+					</div>
+				</section>
+
+				<!-- Münster Connection -->
+				<section data-background-color="#2d1f1f">
+					<h2 style="color: #ef4444;">Warum Münster?</h2>
+					<div class="fragment">
+						<h3>🏆 Bewährte Bürgerbeteiligung</h3>
+						<p>Münster = Keimzelle für Bürgerprojekte</p>
+					</div>
+					<div class="fragment">
+						<h3>🌿 Naturschutz-Engagement</h3>
+						<p>Rieselfelder • Vogelschutzgebiet • StadtGrün naturnah</p>
+					</div>
+					<div class="fragment">
+						<h3>📈 Skalierungspotential</h3>
+						<p>Von Münster in andere Kommunen (wie Leezenflow)</p>
+					</div>
+				</section>
+
+				<!-- Roadmap -->
+				<section>
+					<h2>Roadmap</h2>
+					<div class="fragment">
+						<h3>Phase 1: Proof of Concept 🚀</h3>
+						<p>Hardware-Prototyp • Basic Web-App • 10 Test-Kästen</p>
+					</div>
+					<div class="fragment">
+						<h3>Phase 2: Community Building 👥</h3>
+						<p>Open Source Release • Bauanleitungen • Partner-Akquise</p>
+					</div>
+					<div class="fragment">
+						<h3>Phase 3: Scale & Science 📊</h3>
+						<p>100+ Kästen • NABU Integration • Datenauswertung</p>
+					</div>
+				</section>
+
+				<!-- Team & Contact -->
+				<section>
+					<h2>Team & Next Steps</h2>
+					<div class="fragment">
+						<h3>💪 Was wir haben</h3>
+						<p>✅ Funktionierender Prototyp<br>
+						✅ Full-Stack Implementierung<br>
+						✅ Open Source Konzept</p>
+					</div>
+					<div class="fragment">
+						<h3>🎯 Was wir brauchen</h3>
+						<p>🤝 Partnerschaften (NABU, Stadt Münster)<br>
+						📢 Community Building<br>
+						💰 Skalierungsunterstützung</p>
+					</div>
+				</section>
+
+				<!-- Final Pitch -->
+				<section data-background-color="#1f1111">
+					<h1 class="nestflix-logo">🐦 NESTFLIX</h1>
+					<div class="pitch-box">
+						<h2>Wir machen Naturschutz erlebbar durch DIY-Smart-Nistkästen mit Live-Streaming und Citizen Science für alle.</h2>
+					</div>
+					<div class="fragment">
+						<h3>Gemeinsam bauen wir das Netflix für Nistkästen! 🎬🐦</h3>
+						<p><strong>Danke für eure Aufmerksamkeit!</strong></p>
+					</div>
+					<aside class="notes">
+						Abschließender Call-to-Action: Interesse an Partnerschaften, Community-Building und weiterer Entwicklung wecken.
+					</aside>
+				</section>
 			</div>
 		</div>
 
@@ -31,6 +264,9 @@
 			// - https://revealjs.com/config/
 			Reveal.initialize({
 				hash: true,
+				transition: 'slide',
+				transitionSpeed: 'fast',
+				backgroundTransition: 'fade',
 
 				// Learn about plugins: https://revealjs.com/plugins/
 				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
