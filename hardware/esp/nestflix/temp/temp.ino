@@ -1,23 +1,39 @@
 
 #include <WiFi.h>
 #include <WebServer.h>
+#include <DNSServer.h>
 #include "SD_MMC.h"
 #include "FS.h"
 #include "cameraConfig.h"
+#include "esp_camera.h"
+
 
 const char *ssid = "Birdbox";
-const char *password = "12345678";
+// const char *password = "12345678";
+IPAddress apIP(192, 168, 4, 1);
+const byte DNS_PORT = 53;
+DNSServer dnsServer;
+
+#define PART_BOUNDARY "123456789000000000000987654321"
+static const char *_STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=" PART_BOUNDARY;
+static const char *_STREAM_BOUNDARY = "\r\n--" PART_BOUNDARY "\r\n";
+static const char *_STREAM_PART = "Content-Type: image/jpeg\r\nContent-Length: %u\r\nX-Timestamp: %d.%06d\r\n\r\n";
 
 // HTTP server on port 80
 WebServer server(80);
+String cameraError;
 
 void setupAccessPoint();
 void setupSdCard();
 void setupCamera();
+// void setupLed();
 
-String getContentType(String filename) void handleRequest();
+String getContentType(String filename);
+void handleRequest();
 void handleRoot();
 void handleVideoStream();
+void handleCapture();
+// void handleLed();
 
 void setup() {
   Serial.begin(115200);
@@ -25,11 +41,8 @@ void setup() {
   // Create Wi-Fi AP
   setupAccessPoint();
   // Setup sd-card
-  setupSdCard();
-
-  // Setup routes
-  server.on("/", handleRoot);
-  server.begin();
+  // setupSdCard();
+  // setupLed();
 }
 
 void loop() {
@@ -37,10 +50,17 @@ void loop() {
 }
 
 void setupAccessPoint() {
-  WiFi.softAP(ssid, password);
-  Serial.println("Access Point Started");
-  Serial.print("IP Address: ");
-  Serial.println(WiFi.softAPIP());
+  WiFi.softAP(ssid);
+  WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
+  dnsServer.start(DNS_PORT, "*", apIP);
+  server.onNotFound(handleRequest);
+  server.on("/", handleRequest);
+  server.on("/stream", HTTP_GET, handleVideoStream);
+  server.on("/capture", HTTP_GET, handleCapture);
+  // server.on("/live?", handleRequest);
+  // server.on("/led", handleLed);
+  // server.on("/accept", HTTP_POST, handleAccept);
+  server.begin();
 }
 
 void setupSdCard() {
@@ -99,7 +119,7 @@ void setupCamera() {
   // camera init
   esp_err_t err = esp_camera_init(&config);
   if (err != ESP_OK) {
-    Serial.printf("Camera init failed with error 0x%x", err);
+     cameraError = "Camera init failed";
     return;
   }
 
@@ -119,9 +139,12 @@ void setupCamera() {
   // setupLedFlash();
 }
 
-void handleRoot() {
-  server.send(200, "text/html", "<h1>Hello from ESP32 Access Point!</h1>");
-}
+// void setupLed() {
+//   pinMode(LED_GPIO_NUM, OUTPUT);
+//   digitalWrite(LED_GPIO_NUM, LOW);
+  
+//   isLedOn = false;
+// }
 
 String getContentType(String filename) {
   if (filename.endsWith(".htm") || filename.endsWith(".html")) return "text/html";
@@ -138,11 +161,14 @@ String getContentType(String filename) {
 void handleRequest() {
   String path = server.uri();
   // default
+  if (path.endsWith("live")){
+    path.remove(path.length() - 5);
+  }
   if (path.endsWith("/")) path += "index.html";
 
   File file = SD_MMC.open(path);
   if (!file) {
-    server.send(404, "text/plain", "File Not Found");
+    server.send(404, "text/plain", path);
     return;
   }
 
@@ -152,5 +178,53 @@ void handleRequest() {
 }
 
 void handleVideoStream() {
-  
+  // String path = server.uri();
+  // server.send(200, "text/plain", "videoStream");
+  // return;
+  WiFiClient client = server.client();
+  String boundary = "frame";
+  server.sendHeader("Content-Type", "multipart/x-mixed-replace; boundary=" + boundary);
+  while(client.connected()) {
+    camera_fb_t * fb = esp_camera_fb_get();
+    if(!fb) break;
+
+    client.printf("--%s\r\n", boundary.c_str());
+    client.printf("Content-Type: image/jpeg\r\n");
+    client.printf("Content-Length: %u\r\n\r\n", fb->len);
+    client.write(fb->buf, fb->len);
+    client.printf("\r\n");
+
+    esp_camera_fb_return(fb);
+    delay(100); // ~10 FPS
+  }
+}
+
+void handleCapture() {
+  camera_fb_t * fb = esp_camera_fb_get();
+  if(!fb) {
+    server.send(500, "text/plain", "Camera capture failed");
+    return;
+  }
+  server.sendHeader("Content-Type", "image/jpeg");
+  server.sendHeader("Content-Length", String(fb->len));
+  server.send(200, "image/jpeg", "");
+  WiFiClient client = server.client();
+  client.write(fb->buf, fb->len);
+  esp_camera_fb_return(fb);
+}
+
+// void handleLed() {
+//   if (isLedOn) {
+//     digitalWrite(LED_GPIO_NUM, LOW);
+//     isLedOn = false;
+//     server.send(200, "text/plain", "led is on");
+//   } else {
+//     digitalWrite(LED_GPIO_NUM, HIGH);
+//     isLedOn = true;
+//     server.send(200, "text/plain", "led is off");
+//   }
+// }
+
+void handleLive(){
+
 }
