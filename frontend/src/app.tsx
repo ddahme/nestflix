@@ -276,18 +276,19 @@ function BoxPopupContent({
       className={`popup-card${isDragging ? ' popup-card--dragging' : ''}`}
       role="dialog"
       aria-label={`Nistkasten ${displayName}`}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerCancel}
     >
       <div
         className={`popup-card__drag-handle${isDragging ? ' popup-card__drag-handle--dragging' : ''}`}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerCancel}
+        data-drag-control="true"
         aria-hidden="true"
         title="Popup verschieben"
       />
 
-      <header className="popup-card__header">
+      <header className="popup-card__header" data-drag-control="true">
         <div className="popup-card__headline">
           <h3 className="popup-card__title">{displayName}</h3>
           <p className="popup-card__subtitle">
@@ -434,6 +435,11 @@ export default function App() {
 
   const handlePopupPointerDown = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
+      const dragControl = (event.target as HTMLElement | null)?.closest('[data-drag-control="true"]');
+      if (!dragControl) {
+        return;
+      }
+
       if (!popupInfo) {
         return;
       }
