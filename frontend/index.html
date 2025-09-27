@@ -1,40 +1,73 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset='UTF-8' />
-    <title>react-map-gl Example</title>
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
-    <style>
-      body {
-        margin: 0;
-        font-family: Helvetica, Arial, sans-serif;
-      }
-      #map {
-        width: 100vw;
-        height: 100vh;
-      }
-      .control-panel {
-        position: absolute;
-        top: 0;
-        right: 0;
-        max-width: 320px;
-        background: #fff;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        padding: 12px 24px;
-        margin: 20px;
-        font-size: 13px;
-        line-height: 2;
-        color: #6b6b76;
-        text-transform: uppercase;
-        outline: none;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="map"></div>
-  </body>
-  <script type="module" type="text/javascript">
-    import {renderToDom} from './src/app.tsx';
-    renderToDom(document.getElementById('map'));
-  </script>
+	<head>
+		<meta charset="UTF-8" />
+		<title>react-map-gl Example</title>
+		<link
+			href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css"
+			rel="stylesheet"
+		/>
+		<style>
+			body {
+				margin: 0;
+				font-family: Helvetica, Arial, sans-serif;
+			}
+			#map {
+				width: 100vw;
+				height: 100vh;
+			}
+			.control-panel {
+				position: absolute;
+				top: 0;
+				right: 0;
+				max-width: 320px;
+				background: #fff;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+				padding: 12px 24px;
+				margin: 20px;
+				font-size: 13px;
+				line-height: 2;
+				color: #6b6b76;
+				text-transform: uppercase;
+				outline: none;
+			}
+			.fab {
+				position: fixed;
+				bottom: 20px;
+				right: 20px;
+				width: 56px;
+				height: 56px;
+				background: #007bff;
+				border: none;
+				border-radius: 50%;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+				cursor: pointer;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				transition: all 0.3s ease;
+				z-index: 1000;
+			}
+			.fab:hover {
+				background: #0056b3;
+				transform: scale(1.1);
+				box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+			}
+			.fab:active {
+				transform: scale(0.95);
+			}
+			.fab svg {
+				width: 24px;
+				height: 24px;
+				fill: white;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="map"></div>
+	</body>
+	<script type="module" type="text/javascript">
+		import { renderToDom } from "./src/app.tsx";
+		renderToDom(document.getElementById("map"));
+	</script>
 </html>
