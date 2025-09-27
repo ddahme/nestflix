@@ -30,7 +30,6 @@ builder.Services.Configure<JsonOptions>(options =>
 });
 
 builder.Services.ConfigureFullSwaggerConfig();
-builder.Services.ConfigureFullSwaggerConfig();
 
 builder.Services.AddDbContextFactory<NestflixDbContext>(options =>
 {
