@@ -4,10 +4,10 @@ const Landing = () => {
   return (
     <main class="container">
       <img src="/nestflix_logo.png" />
-      <h1>Nestflix</h1>
+      <h1 style="text-transform: uppercase;">Nestflix</h1>
       <p>Gleich gehts los.</p>
 
-      <p>
+      <p style="padding-block-end: 1em;">
         Damit Nestflix funktioniert, brauchen wir deine Einverständnis. Die
         Daten, die die Plattform am Leben erhalten, werden von Nutzenden wie dir
         hochgeladen, da die Nistkästen selbst über keine Internetverbindung

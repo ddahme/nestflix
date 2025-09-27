@@ -14,10 +14,11 @@ const sendTweet = async (tweet: {
   deadCount: number;
   description: string;
 }) => {
-  await fetch(`${BASE_URL}api/boxes/${tweet.boxId}/tweets`, {
-    method: "POST",
-    body: JSON.stringify(tweet),
-  });
+  // await fetch(`${BASE_URL}api/boxes/${tweet.boxId}/tweets`, {
+  //   method: "POST",
+  //   body: JSON.stringify(tweet),
+  // });
+  await new Promise((resolve) => window.setTimeout(resolve, 4_000));
 };
 
 const Live = () => {
@@ -69,7 +70,11 @@ const Live = () => {
   return (
     <main class="container" style="padding-inline: 0;">
       <section>
-        <img src="/stream" alt="Livestream aus dem Nistkasten" ref={imgRef} />
+        <img
+          src="/birdie2.jpeg"
+          alt="Livestream aus dem Nistkasten"
+          ref={imgRef}
+        />
       </section>
       <section>
         <Show when={formState() === "unsent"}>
@@ -96,6 +101,7 @@ const Live = () => {
                 <option selected disabled value="">
                   Welcher Vogel lebt hier?
                 </option>
+                <option>Amsel</option>
                 <option>Bachstelze</option>
                 <option>Blaumeise</option>
                 <option>Buchfink</option>
