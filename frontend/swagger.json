@@ -1,0 +1,489 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Nestflix API",
+    "description": "Nestflix API",
+    "contact": {
+      "name": "Nestflix"
+    },
+    "version": "v1"
+  },
+  "paths": {
+    "/api/ai/test": {
+      "get": {
+        "tags": [
+          "AI"
+        ],
+        "operationId": "GetTestResponse",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/boxes/{boxId}": {
+      "get": {
+        "tags": [
+          "Boxes"
+        ],
+        "parameters": [
+          {
+            "name": "boxId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoxResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Boxes"
+        ],
+        "parameters": [
+          {
+            "name": "boxId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBoxRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Boxes"
+        ],
+        "parameters": [
+          {
+            "name": "boxId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/boxes": {
+      "get": {
+        "tags": [
+          "Boxes"
+        ],
+        "parameters": [
+          {
+            "name": "Latitude",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "Longitude",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "Size",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "distanceInMeters",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BoxResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Boxes"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBoxRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoxResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/boxes/{boxId}/tweets": {
+      "get": {
+        "tags": [
+          "Tweets"
+        ],
+        "parameters": [
+          {
+            "name": "boxId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "Size",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TweetResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Tweets"
+        ],
+        "parameters": [
+          {
+            "name": "boxId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTweetRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BoxResponse": {
+        "required": [
+          "boxType",
+          "createdAt",
+          "id",
+          "isArchived",
+          "name",
+          "point"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "point": {
+            "$ref": "#/components/schemas/PointDto"
+          },
+          "boxType": {
+            "$ref": "#/components/schemas/BoxType"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isArchived": {
+            "type": "boolean"
+          },
+          "latestTweet": {
+            "$ref": "#/components/schemas/TweetResponse"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BoxType": {
+        "enum": [
+          "Sparrow"
+        ],
+        "type": "string"
+      },
+      "CreateBoxRequest": {
+        "required": [
+          "boxType",
+          "name",
+          "point"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "point": {
+            "$ref": "#/components/schemas/PointDto"
+          },
+          "boxType": {
+            "$ref": "#/components/schemas/BoxType"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateTweetRequest": {
+        "required": [
+          "imageBase64"
+        ],
+        "type": "object",
+        "properties": {
+          "imageBase64": {
+            "type": "string",
+            "nullable": true
+          },
+          "isOccupied": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "birdType": {
+            "type": "string",
+            "nullable": true
+          },
+          "eggCount": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "hatchedCount": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "deadCount": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PointDto": {
+        "required": [
+          "latitude",
+          "longitude"
+        ],
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TweetResponse": {
+        "required": [
+          "boxId",
+          "description",
+          "sasUri",
+          "uploadedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "boxId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sasUri": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "uploadedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isOccupied": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "birdType": {
+            "type": "string",
+            "nullable": true
+          },
+          "eggCount": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "hatchedCount": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "deadCount": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateBoxRequest": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
