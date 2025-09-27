@@ -81,17 +81,40 @@
 				display: flex;
 				flex-direction: column;
 				gap: 18px;
-				cursor: grab;
-				max-height: min(70vh, 500px);
+				max-height: min(70vh, 520px);
 				overflow-y: auto;
-				touch-action: none;
+				touch-action: pan-y;
+				scrollbar-width: thin;
+				scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+			}
+			.popup-card::-webkit-scrollbar {
+				width: 8px;
+			}
+			.popup-card::-webkit-scrollbar-track {
+				background: transparent;
+			}
+			.popup-card::-webkit-scrollbar-thumb {
+				background: rgba(148, 163, 184, 0.35);
+				border-radius: 999px;
 			}
 			.popup-card--dragging {
-				cursor: grabbing;
 				user-select: none;
 			}
-			.popup-card--dragging * {
-				cursor: inherit;
+			.popup-card__drag-handle {
+				align-self: center;
+				width: 64px;
+				height: 6px;
+				border-radius: 999px;
+				background: rgba(148, 163, 184, 0.35);
+				cursor: grab;
+				transition: background 0.2s ease;
+			}
+			.popup-card__drag-handle:hover {
+				background: rgba(148, 163, 184, 0.55);
+			}
+			.popup-card__drag-handle--dragging {
+				background: rgba(148, 163, 184, 0.75);
+				cursor: grabbing;
 			}
 			.popup-card__header {
 				display: flex;
@@ -175,30 +198,6 @@
 				padding: 8px 10px;
 				border-radius: 8px;
 			}
-			.popup-card__coords {
-				display: grid;
-				grid-template-columns: repeat(2, minmax(0, 1fr));
-				gap: 12px;
-			}
-			.popup-card__coords div {
-				background: rgba(148, 163, 184, 0.12);
-				padding: 12px;
-				border-radius: 12px;
-				display: flex;
-				flex-direction: column;
-				gap: 6px;
-			}
-			.popup-card__coords span {
-				font-size: 0.75rem;
-				letter-spacing: 0.04em;
-				text-transform: uppercase;
-				color: rgba(226, 232, 240, 0.65);
-			}
-			.popup-card__coords strong {
-				font-size: 1rem;
-				color: #e2e8f0;
-				font-weight: 600;
-			}
 			.popup-card__section-header {
 				display: flex;
 				justify-content: space-between;
@@ -221,17 +220,6 @@
 				line-height: 1.4;
 				color: rgba(241, 245, 249, 0.9);
 			}
-			.popup-card__list {
-				margin: 0;
-				padding-left: 18px;
-				display: flex;
-				flex-direction: column;
-				gap: 6px;
-				color: #e2e8f0;
-			}
-			.popup-card__list li {
-				font-size: 0.9rem;
-			}
 			.popup-card__link {
 				display: inline-flex;
 				align-items: center;
@@ -245,14 +233,105 @@
 			.popup-card__link:hover {
 				text-decoration: underline;
 			}
-			.popup-card__section--tweet {
-				background: rgba(15, 23, 42, 0.45);
-				padding: 16px;
-				border-radius: 14px;
-				border: 1px solid rgba(148, 163, 184, 0.15);
+			.popup-card__section--tweets {
+				gap: 16px;
 			}
-			.popup-card__section--empty {
-				opacity: 0.8;
+			.popup-card__tweets {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+				display: flex;
+				flex-direction: column;
+				gap: 14px;
+			}
+			.popup-card__tweet {
+				background: rgba(15, 23, 42, 0.45);
+				border-radius: 14px;
+				border: 1px solid rgba(148, 163, 184, 0.18);
+				padding: 14px 16px;
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+			}
+			.popup-card__tweet-meta {
+				display: flex;
+				justify-content: space-between;
+				align-items: baseline;
+				gap: 12px;
+				font-size: 0.78rem;
+				letter-spacing: 0.03em;
+				text-transform: uppercase;
+				color: rgba(226, 232, 240, 0.65);
+			}
+			.popup-card__tweet-description {
+				margin: 0;
+				font-size: 0.95rem;
+				line-height: 1.45;
+				color: rgba(241, 245, 249, 0.9);
+			}
+			.popup-card__tweet-stats {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+				gap: 8px 12px;
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				font-size: 0.82rem;
+				color: rgba(226, 232, 240, 0.85);
+			}
+			.popup-card__tweet-stats li {
+				display: flex;
+				gap: 6px;
+				align-items: baseline;
+			}
+			.popup-card__tweet-stats li strong {
+				font-weight: 600;
+				color: #f8fafc;
+			}
+			.popup-card__message {
+				margin: 0;
+				padding: 14px 16px;
+				border-radius: 12px;
+				font-size: 0.9rem;
+				line-height: 1.4;
+				background: rgba(148, 163, 184, 0.16);
+				color: rgba(226, 232, 240, 0.85);
+			}
+			.popup-card__message--error {
+				display: flex;
+				flex-direction: column;
+				gap: 6px;
+				background: rgba(248, 113, 113, 0.14);
+				color: #fecaca;
+				border: 1px solid rgba(248, 113, 113, 0.25);
+			}
+			.popup-card__message--error small {
+				display: block;
+				margin-top: 8px;
+				font-size: 0.75rem;
+				opacity: 0.75;
+			}
+			.popup-card__retry {
+				margin-top: 12px;
+				padding: 6px 14px;
+				border-radius: 999px;
+				border: 1px solid rgba(56, 189, 248, 0.45);
+				background: rgba(56, 189, 248, 0.15);
+				color: #bae6fd;
+				font-size: 0.85rem;
+				font-weight: 600;
+				cursor: pointer;
+				transition: background 0.2s ease, border-color 0.2s ease;
+			}
+			.popup-card__retry:hover {
+				background: rgba(56, 189, 248, 0.24);
+				border-color: rgba(56, 189, 248, 0.65);
+			}
+			.popup-card__sentinel {
+				text-align: center;
+				font-size: 0.8rem;
+				color: rgba(148, 163, 184, 0.8);
+				padding: 8px 0 4px;
 			}
 		</style>
 	</head>

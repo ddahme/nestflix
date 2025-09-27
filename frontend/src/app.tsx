@@ -53,6 +53,8 @@ interface PopupPosition {
 
 const relativeTimeFormatter = new Intl.RelativeTimeFormat('de-DE', {numeric: 'auto'});
 
+const TWEETS_PAGE_SIZE = 10;
+
 function formatDate(value?: Nullable<string>) {
   if (!value) {
     return '–';
@@ -107,14 +109,6 @@ function formatRelative(value?: Nullable<string>) {
   return relativeTimeFormatter.format(Math.round(elapsed / week), 'week');
 }
 
-function formatCoordinate(value?: Nullable<number>) {
-  if (typeof value !== 'number' || Number.isNaN(value)) {
-    return '–';
-  }
-
-  return value.toFixed(5);
-}
-
 function getBoxPosition(box: BoxResponse): PopupPosition | null {
   if (!box.point) {
     return null;
@@ -147,22 +141,152 @@ function BoxPopupContent({
   onPointerUp,
   onPointerCancel
 }: BoxPopupContentProps) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const loadedPagesRef = useRef<Record<string, boolean>>({});
+  const [tweets, setTweets] = useState<TweetResponse[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [reloadToken, setReloadToken] = useState(0);
+
   const displayName = box.name?.trim() || 'Unbenannte Box';
   const shortId = box.id?.split('-')[0]?.toUpperCase() ?? box.id;
   const statusClass = box.isArchived ? 'status-badge status-badge--archived' : 'status-badge status-badge--active';
   const statusLabel = box.isArchived ? 'Archiviert' : 'Aktiv';
-  const latest = box.latestTweet ?? undefined;
+  const tweetsCountLabel = tweets.length === 1 ? '1 Eintrag' : `${tweets.length} Einträge`;
+
+  useEffect(() => {
+    setTweets([]);
+    setPage(1);
+    setHasMore(true);
+    setFetchError(null);
+    setReloadToken(0);
+    loadedPagesRef.current = {};
+  }, [box.id]);
+
+  const requestNextPage = useCallback(() => {
+    if (isLoading || !hasMore || fetchError) {
+      return;
+    }
+
+    setPage(prev => prev + 1);
+  }, [fetchError, hasMore, isLoading]);
+
+  const handleRetry = useCallback(() => {
+    setFetchError(null);
+    setHasMore(true);
+    setReloadToken(prev => prev + 1);
+  }, []);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const sentinel = sentinelRef.current;
+
+    if (!container || !sentinel || !hasMore) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            requestNextPage();
+          }
+        });
+      },
+      {
+        root: container,
+        rootMargin: '120px',
+        threshold: 0.1
+      }
+    );
+
+    observer.observe(sentinel);
+
+    return () => observer.disconnect();
+  }, [hasMore, requestNextPage, tweets.length]);
+
+  useEffect(() => {
+    const pageKey = `${box.id}-${page}-${reloadToken}`;
+
+    if (!hasMore && page !== 1) {
+      return;
+    }
+
+    if (loadedPagesRef.current[pageKey]) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadTweets = async () => {
+      setIsLoading(true);
+
+      try {
+        const response = await api.getTweets(box.id, page, TWEETS_PAGE_SIZE);
+
+        if (!response.ok) {
+          throw new Error(`API responded with ${response.status}`);
+        }
+
+        const payload: TweetResponse[] = await response.json();
+
+        if (cancelled) {
+          return;
+        }
+
+        loadedPagesRef.current[pageKey] = true;
+        setTweets(prev => (page === 1 ? payload : [...prev, ...payload]));
+        setHasMore(payload.length === TWEETS_PAGE_SIZE);
+        setFetchError(null);
+      } catch (error) {
+        if (cancelled) {
+          return;
+        }
+
+        console.error('Error loading tweets:', error);
+        setFetchError(error instanceof Error ? error.message : 'Unbekannter Fehler');
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadTweets();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [box.id, page, reloadToken, hasMore]);
+
+  const sentinelLabel = isLoading
+    ? 'Lade weitere Einträge…'
+    : hasMore
+    ? 'Scrollen, um mehr zu laden'
+    : tweets.length > 0
+    ? 'Keine weiteren Tweets'
+    : '';
 
   return (
     <div
+      ref={containerRef}
       className={`popup-card${isDragging ? ' popup-card--dragging' : ''}`}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      onPointerCancel={onPointerCancel}
       role="dialog"
       aria-label={`Nistkasten ${displayName}`}
     >
+      <div
+        className={`popup-card__drag-handle${isDragging ? ' popup-card__drag-handle--dragging' : ''}`}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerCancel}
+        aria-hidden="true"
+        title="Popup verschieben"
+      />
+
       <header className="popup-card__header">
         <div className="popup-card__headline">
           <h3 className="popup-card__title">{displayName}</h3>
@@ -186,73 +310,85 @@ function BoxPopupContent({
         </dl>
       </section>
 
-      <section className="popup-card__section popup-card__coords">
-        <div>
-          <span>Breite</span>
-          <strong>{formatCoordinate(box.point?.latitude)}</strong>
+      <section className="popup-card__section popup-card__section--tweets">
+        <div className="popup-card__section-header">
+          <h4>Tweets</h4>
+          <span>{tweetsCountLabel}</span>
         </div>
-        <div>
-          <span>Länge</span>
-          <strong>{formatCoordinate(box.point?.longitude)}</strong>
+
+        {fetchError && (
+          <div className="popup-card__message popup-card__message--error">
+            <span>Beim Laden der Tweets ist ein Fehler aufgetreten.</span>
+            <button type="button" className="popup-card__retry" onClick={handleRetry}>
+              Erneut versuchen
+            </button>
+            <small>{fetchError}</small>
+          </div>
+        )}
+
+        {!fetchError && tweets.length === 0 && !isLoading && (
+          <p className="popup-card__message">Für diese Box liegen noch keine Beobachtungen vor.</p>
+        )}
+
+        <ul className="popup-card__tweets">
+          {tweets.map((tweet, index) => {
+            const key = `${tweet.uploadedAt}-${index}`;
+            const statusLabelTweet =
+              typeof tweet.isOccupied === 'boolean' ? (tweet.isOccupied ? 'Belegt' : 'Frei') : null;
+
+            return (
+              <li key={key} className="popup-card__tweet">
+                <div className="popup-card__tweet-meta">
+                  <span>{formatDate(tweet.uploadedAt)}</span>
+                  <span>{formatRelative(tweet.uploadedAt)}</span>
+                </div>
+
+                {tweet.description && (
+                  <p className="popup-card__tweet-description">{tweet.description}</p>
+                )}
+
+                <ul className="popup-card__tweet-stats">
+                  {statusLabelTweet && (
+                    <li>
+                      <strong>Status:</strong> {statusLabelTweet}
+                    </li>
+                  )}
+                  {tweet.birdType && (
+                    <li>
+                      <strong>Vogelart:</strong> {tweet.birdType}
+                    </li>
+                  )}
+                  {typeof tweet.eggCount === 'number' && (
+                    <li>
+                      <strong>Eier:</strong> {tweet.eggCount}
+                    </li>
+                  )}
+                  {typeof tweet.hatchedCount === 'number' && (
+                    <li>
+                      <strong>Geschlüpft:</strong> {tweet.hatchedCount}
+                    </li>
+                  )}
+                  {typeof tweet.deadCount === 'number' && (
+                    <li>
+                      <strong>Verluste:</strong> {tweet.deadCount}
+                    </li>
+                  )}
+                </ul>
+
+                {tweet.sasUri && (
+                  <a className="popup-card__link" href={tweet.sasUri} target="_blank" rel="noreferrer">
+                    Foto ansehen
+                  </a>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+
+        <div ref={sentinelRef} className="popup-card__sentinel" aria-hidden="true">
+          {sentinelLabel}
         </div>
       </section>
-
-      {latest ? (
-        <section className="popup-card__section popup-card__section--tweet">
-          <div className="popup-card__section-header">
-            <h4>Letztes Update</h4>
-            <span>{formatRelative(latest.uploadedAt)}</span>
-          </div>
-          {latest.description && (
-            <p className="popup-card__description">{latest.description}</p>
-          )}
-          <ul className="popup-card__list">
-            {typeof latest.isOccupied === 'boolean' && (
-              <li>
-                <strong>Status:</strong> {latest.isOccupied ? 'Belegt' : 'Frei'}
-              </li>
-            )}
-            {latest.birdType && (
-              <li>
-                <strong>Vogelart:</strong> {latest.birdType}
-              </li>
-            )}
-            {typeof latest.eggCount === 'number' && (
-              <li>
-                <strong>Eier:</strong> {latest.eggCount}
-              </li>
-            )}
-            {typeof latest.hatchedCount === 'number' && (
-              <li>
-                <strong>Geschlüpft:</strong> {latest.hatchedCount}
-              </li>
-            )}
-            {typeof latest.deadCount === 'number' && (
-              <li>
-                <strong>Verluste:</strong> {latest.deadCount}
-              </li>
-            )}
-          </ul>
-          {latest.sasUri && (
-            <a
-              className="popup-card__link"
-              href={latest.sasUri}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Foto ansehen
-            </a>
-          )}
-        </section>
-      ) : (
-        <section className="popup-card__section popup-card__section--tweet popup-card__section--empty">
-          <div className="popup-card__section-header">
-            <h4>Letztes Update</h4>
-            <span>Keine Daten</span>
-          </div>
-          <p className="popup-card__description">Für diese Box liegen noch keine Beobachtungen vor.</p>
-        </section>
-      )}
     </div>
   );
 }

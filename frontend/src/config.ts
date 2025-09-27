@@ -44,4 +44,10 @@ export const api = {
 			body: JSON.stringify(boxData),
 		});
 	},
+
+	async getTweets(boxId: string, page: number = 1, size: number = 10) {
+		return fetch(
+			`${config.api.baseUrl}/api/boxes/${boxId}/tweets?Page=${page}&Size=${size}`
+		);
+	},
 };
