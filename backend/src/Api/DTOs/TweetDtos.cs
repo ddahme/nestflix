@@ -6,7 +6,7 @@ public sealed record TweetResponse
     public required Guid BoxId { get; init; }
     public required Uri SasUri { get; init; }
     public required DateTime UploadedAt { get; init; }
-    public required bool IsOccupied { get; init; }
+    public bool? IsOccupied { get; init; }
     public string? BirdType { get; init; }
     public int? EggCount { get; init; }
     public int? HatchedCount { get; init; }
@@ -23,6 +23,7 @@ public sealed record CreateTweetRequest
     public string? BirdType { get; init; }
     public int? EggCount { get; init; }
     public int? HatchedCount { get; init; }
+    public int? DeadCount { get; init; }
     public string Description { get; init; } = string.Empty;
 
 }

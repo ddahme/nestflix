@@ -1,10 +1,10 @@
 ﻿using Api.DTOs;
+using Api.Pagination;
 
 namespace Api.Services;
 
 public interface ITweetService
 {
-    Task UploadTweet(CreateTweetRequest request);
-    Task<TweetResponse> GetTweetById(Guid id);
-    Task<IEnumerable<TweetResponse>> GetTweetsFromBox(Guid boxId);
+    Task UploadTweet(Guid boxId, CreateTweetRequest request);
+    Task<IEnumerable<TweetResponse>> GetTweetsFromBox(Guid boxId, PageRequestDto page);
 }

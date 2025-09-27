@@ -1,4 +1,6 @@
-﻿namespace Api.DTOs;
+﻿using Api.Pagination;
+
+namespace Api.DTOs;
 
 public sealed record BoxResponse
 {
@@ -15,6 +17,13 @@ public sealed record BoxResponse
 public sealed record UpdateBoxRequest
 {
     public required string Name { get; init; }
+}
+
+public sealed record GetBoxesInDistanceRequest
+{
+    public required PointDto Point { get; set; }
+    public required double DistanceInMeters { get; set; }
+    public PageRequestDto Page { get; set; } = new();
 }
 
 public sealed record CreateBoxRequest

@@ -1,13 +1,13 @@
 ﻿using Api.Database;
 using Api.Entities;
+using Api.Exceptions;
 using Api.Pagination;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using NetTopologySuite.Geometries;
 
 namespace Api.Repositories;
 
-public sealed class BoxRepository(IDbContextFactory<NestflixDbContext> dbContextFactory) : IBoxRepository
+public sealed class BoxRepository(ILogger<BoxRepository> logger, IDbContextFactory<NestflixDbContext> dbContextFactory) : IBoxRepository
 {
     public async Task AddBox(BoxEntity entity)
     {
@@ -24,18 +24,34 @@ public sealed class BoxRepository(IDbContextFactory<NestflixDbContext> dbContext
         await context.SaveChangesAsync();
     }
 
-    public Task<BoxEntity?> GetBox(Guid id)
+    public async Task<BoxEntity?> GetBox(Guid id)
     {
-        throw new NotImplementedException();
+        await using var context = await dbContextFactory.CreateDbContextAsync();
+        return await context.Boxes.FirstOrDefaultAsync(b => b.Id == id);
     }
 
-    public Task<IEnumerable<BoxEntity>> GetBoxesInDistance(Point point, int radiusInMeter, PageRequestDto page)
+    public async Task<BoxEntity> GetBoxElseThrow(Guid id)
     {
-        throw new NotImplementedException();
+        return await GetBox(id) ?? throw new NotFoundException();
     }
 
-    public Task UpdateBox(BoxEntity entity)
+    public async Task<IEnumerable<BoxEntity>> GetBoxesInDistance(Point point, double radiusInMeter, PageRequestDto page)
     {
-        throw new NotImplementedException();
+        await using var context = await dbContextFactory.CreateDbContextAsync();
+
+        return await context.Boxes
+            .Where(b => !b.IsArchived)
+            .Where(b => b.Point.Distance(point) <= radiusInMeter)
+            .OrderBy(b => b.Point.Distance(point))
+            .Skip(page.Offest())
+            .Take(page.Size)
+            .ToListAsync();
+    }
+
+    public async Task UpdateBox(BoxEntity entity)
+    {
+        await using var context = await dbContextFactory.CreateDbContextAsync();
+        context.Boxes.Update(entity);
+        await context.SaveChangesAsync();
     }
 }

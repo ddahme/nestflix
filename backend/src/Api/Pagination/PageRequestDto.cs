@@ -1,7 +1,14 @@
-﻿namespace Api.Pagination;
+﻿using System.ComponentModel;
+
+namespace Api.Pagination;
 
 public sealed record PageRequestDto
 {
-    public int Page { get; set; } = 1;
-    public int Size { get; set; } = 10;
+    [DefaultValue(1)]
+    public int Page { get; set; }
+    [DefaultValue(10)]
+    public int Size { get; set; }
+
+    // Keeping existing method name to avoid breaking callers
+    public int Offest() => (Page - 1) * Size;
 }

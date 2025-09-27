@@ -1,3 +1,7 @@
+using Api.DTOs;
+using Api.Pagination;
+using Api.Services;
+
 namespace Api.Endpoints;
 
 public static class TweetEndpoints
@@ -8,18 +12,25 @@ public static class TweetEndpoints
         RouteGroupBuilder group = app.MapGroup("/api/boxes/{boxId:guid}/tweets")
             .WithTags("Tweets");
 
-        group.MapGet("/{tweetId}", GetTweetById)
-            .WithName(nameof(GetTweetById))
-            .Produces<TweetEntity>(StatusCodes.Status200OK);
+        group.MapGet("/", GetTweetsFromBox)
+            .Produces<IEnumerable<TweetResponse>>(StatusCodes.Status200OK);
 
-        group.MapGet("/", DeleteTweet)
-            .WithName(nameof(DeleteTweet))
-            .Produces<TweetResponse>(StatusCodes.Status200OK);
 
-        group.MapPost("/", AddTweet)
-            .Produces<TweetResponse>(StatusCodes.Status201Created);
+        group.MapPost("/", UploadTweet)
+            .Produces(StatusCodes.Status201Created);
 
         return group;
     }
 
+    private static async Task<IResult> UploadTweet(Guid boxId, CreateTweetRequest request, ITweetService tweetService)
+    {
+        await tweetService.UploadTweet(boxId, request);
+        return Results.Created();
+    }
+
+    private static async Task<IResult> GetTweetsFromBox(Guid boxId, [AsParameters] PageRequestDto page, ITweetService tweetService)
+    {
+        IEnumerable<TweetResponse> tweets = await tweetService.GetTweetsFromBox(boxId, page);
+        return Results.Ok(tweets);
+    }
 }
