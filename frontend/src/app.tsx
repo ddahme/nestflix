@@ -312,10 +312,6 @@ function BoxPopupContent({
             <dt>Erstellt</dt>
             <dd>{formatDate(box.createdAt)}</dd>
           </div>
-          <div>
-            <dt>Box-ID</dt>
-            <dd className="popup-card__code">{box.id}</dd>
-          </div>
         </dl>
       </section>
 
@@ -689,13 +685,13 @@ export default function App() {
         {popupInfo && popupCoordinates && (
           <Popup
             className="box-popup"
-            anchor="top"
+            anchor="right"
             longitude={popupCoordinates.longitude}
             latitude={popupCoordinates.latitude}
             closeOnClick={false}
             closeButton
             maxWidth="auto"
-            offset={[0, 16]}
+            offset={[-24, 0]}
             onClose={handleClosePopup}
           >
             <BoxPopupContent

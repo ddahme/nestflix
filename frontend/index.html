@@ -73,6 +73,30 @@
 				max-width: min(380px, calc(100vw - 48px));
 				font-family: "Segoe UI", "Inter", sans-serif;
 			}
+			.box-popup .mapboxgl-popup-close-button {
+				top: 10px;
+				right: 10px;
+				width: 28px;
+				height: 28px;
+				padding: 0;
+				border: none;
+				border-radius: 6px;
+				background: transparent;
+				color: rgba(226, 232, 240, 0.85);
+				font-size: 22px;
+				font-weight: 600;
+				line-height: 1;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				transition: color 0.2s ease, background 0.2s ease;
+			}
+			.box-popup .mapboxgl-popup-close-button:hover,
+			.box-popup .mapboxgl-popup-close-button:focus-visible {
+				background: rgba(148, 163, 184, 0.12);
+				color: #f8fafc;
+				outline: none;
+			}
 			.box-popup .mapboxgl-popup-tip {
 				border-top-color: #1f2937;
 			}
@@ -193,14 +217,6 @@
 				font-size: 0.95rem;
 				font-weight: 500;
 				color: #f8fafc;
-			}
-			.popup-card__code {
-				font-family: "JetBrains Mono", "Fira Mono", monospace;
-				font-size: 0.72rem;
-				word-break: break-all;
-				background: rgba(15, 23, 42, 0.5);
-				padding: 8px 10px;
-				border-radius: 8px;
 			}
 			.popup-card__section-header {
 				display: flex;
