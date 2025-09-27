@@ -51,6 +51,12 @@ interface PopupPosition {
   latitude: number;
 }
 
+interface PopupMedia {
+  src: string;
+  alt: string;
+  description?: string;
+}
+
 const relativeTimeFormatter = new Intl.RelativeTimeFormat('de-DE', {numeric: 'auto'});
 
 const TWEETS_PAGE_SIZE = 10;
@@ -131,6 +137,7 @@ interface BoxPopupContentProps {
   onPointerMove?: (event: React.PointerEvent<HTMLDivElement>) => void;
   onPointerUp?: (event: React.PointerEvent<HTMLDivElement>) => void;
   onPointerCancel?: (event: React.PointerEvent<HTMLDivElement>) => void;
+  onOpenMedia?: (media: PopupMedia) => void;
 }
 
 function BoxPopupContent({
@@ -139,7 +146,8 @@ function BoxPopupContent({
   onPointerDown,
   onPointerMove,
   onPointerUp,
-  onPointerCancel
+  onPointerCancel,
+  onOpenMedia
 }: BoxPopupContentProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
@@ -378,13 +386,25 @@ function BoxPopupContent({
 
                 {tweet.sasUri && (
                   <figure className="popup-card__tweet-media" aria-label="Foto der Beobachtung">
-                    <a href={tweet.sasUri} target="_blank" rel="noreferrer">
+                    <button
+                      type="button"
+                      className="popup-card__image-button"
+                      aria-haspopup="dialog"
+                      aria-label="Bild vergrößern"
+                      onClick={() =>
+                        onOpenMedia?.({
+                          src: tweet.sasUri!,
+                          alt: `Beobachtung vom ${formatDate(tweet.uploadedAt)}`,
+                          description: tweet.description ?? undefined
+                        })
+                      }
+                    >
                       <img
                         src={tweet.sasUri}
                         alt={`Beobachtung vom ${formatDate(tweet.uploadedAt)}`}
                         loading="lazy"
                       />
-                    </a>
+                    </button>
                     <figcaption>Zum Vergrößern tippen</figcaption>
                   </figure>
                 )}
@@ -408,6 +428,8 @@ export default function App() {
   const [popupPosition, setPopupPosition] = useState<PopupPosition | null>(null);
   const [isPopupDragging, setIsPopupDragging] = useState(false);
   const [boxes, setBoxes] = useState<BoxResponse[]>([]);
+  const [activeMedia, setActiveMedia] = useState<PopupMedia | null>(null);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   const handleFabClick = () => {
     // Hier können Sie die gewünschte Aktion hinzufügen
@@ -438,6 +460,16 @@ export default function App() {
 
     const mapInstance = mapRef.current?.getMap();
     mapInstance?.dragPan.enable();
+  }, []);
+
+  const handleOpenMedia = useCallback((media: PopupMedia) => {
+    setActiveMedia(media);
+    setIsLightboxOpen(true);
+  }, []);
+
+  const handleCloseMedia = useCallback(() => {
+    setIsLightboxOpen(false);
+    setActiveMedia(null);
   }, []);
 
   const handlePopupPointerDown = useCallback(
@@ -607,6 +639,32 @@ export default function App() {
     }
   }, [popupInfo, popupCoordinates, handleClosePopup]);
 
+  useEffect(() => {
+    if (!isLightboxOpen) {
+      return;
+    }
+
+    const listener = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        handleCloseMedia();
+      }
+    };
+
+    window.addEventListener('keydown', listener);
+
+    return () => window.removeEventListener('keydown', listener);
+  }, [isLightboxOpen, handleCloseMedia]);
+
+  useEffect(() => {
+    if (isLightboxOpen) {
+      const previous = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = previous;
+      };
+    }
+  }, [isLightboxOpen]);
+
   return (
     <>
       <Map
@@ -647,6 +705,7 @@ export default function App() {
               onPointerMove={handlePopupPointerMove}
               onPointerUp={handlePopupPointerUp}
               onPointerCancel={handlePopupPointerCancel}
+              onOpenMedia={handleOpenMedia}
             />
           </Popup>
         )}
@@ -659,6 +718,29 @@ export default function App() {
           <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
         </svg>
       </button>
+
+      {isLightboxOpen && activeMedia && (
+        <div
+          className="media-lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Foto vergrößert"
+          onClick={handleCloseMedia}
+        >
+          <div className="media-lightbox__backdrop" />
+          <div className="media-lightbox__content" onClick={event => event.stopPropagation()}>
+            <button type="button" className="media-lightbox__close" onClick={handleCloseMedia} aria-label="Schließen">
+              ×
+            </button>
+            <div className="media-lightbox__image-wrapper">
+              <img src={activeMedia.src} alt={activeMedia.alt} />
+            </div>
+            {activeMedia.description && (
+              <p className="media-lightbox__caption">{activeMedia.description}</p>
+            )}
+          </div>
+        </div>
+      )}
     </>
   );
 }
