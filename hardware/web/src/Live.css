@@ -1,0 +1,33 @@
+video {
+    display: block;
+    margin: 0 auto;
+    aspect-ratio: 1 / 1;
+}
+
+section:nth-child(2) {
+    padding-block: 1em;
+    padding-block-start: 2em;
+    padding-inline: 1em;
+
+    h1, h2 {
+        text-align: center;
+    }
+}
+
+small {
+    padding-block: 1em;
+    text-align: justify;
+}
+
+datalist {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-left: .5em;
+  margin-top: -1.5em;
+  margin-bottom: 1.5em;
+}
+
+option {
+  padding: 0;
+}
