@@ -1,0 +1,14 @@
+{
+  "$schema": "https://aka.ms/azure/static-web-apps-cli/schema",
+  "configurations": {
+    "nestflix": {
+      "appLocation": ".",
+      "outputLocation": "dist",
+      "appBuildCommand": "npm run build",
+      "appDevserverCommand": "npm start",
+      "appDevserverUrl": "http://localhost:5173",
+      "appName": "nestflix",
+      "resourceGroup": "mshack"
+    }
+  }
+}
