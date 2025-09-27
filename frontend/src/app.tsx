@@ -377,9 +377,16 @@ function BoxPopupContent({
                 </ul>
 
                 {tweet.sasUri && (
-                  <a className="popup-card__link" href={tweet.sasUri} target="_blank" rel="noreferrer">
-                    Foto ansehen
-                  </a>
+                  <figure className="popup-card__tweet-media" aria-label="Foto der Beobachtung">
+                    <a href={tweet.sasUri} target="_blank" rel="noreferrer">
+                      <img
+                        src={tweet.sasUri}
+                        alt={`Beobachtung vom ${formatDate(tweet.uploadedAt)}`}
+                        loading="lazy"
+                      />
+                    </a>
+                    <figcaption>Zum Vergrößern tippen</figcaption>
+                  </figure>
                 )}
               </li>
             );

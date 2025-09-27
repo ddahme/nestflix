@@ -224,19 +224,6 @@
 				line-height: 1.4;
 				color: rgba(241, 245, 249, 0.9);
 			}
-			.popup-card__link {
-				display: inline-flex;
-				align-items: center;
-				gap: 6px;
-				margin-top: 4px;
-				font-size: 0.9rem;
-				font-weight: 600;
-				color: #38bdf8;
-				text-decoration: none;
-			}
-			.popup-card__link:hover {
-				text-decoration: underline;
-			}
 			.popup-card__section--tweets {
 				gap: 16px;
 			}
@@ -292,6 +279,33 @@
 				font-weight: 600;
 				color: #f8fafc;
 			}
+			.popup-card__tweet-media {
+				margin: 4px 0 0;
+				display: flex;
+				flex-direction: column;
+				gap: 8px;
+			}
+			.popup-card__tweet-media a {
+				display: block;
+				border-radius: 12px;
+				overflow: hidden;
+				border: 1px solid rgba(148, 163, 184, 0.32);
+				background: rgba(15, 23, 42, 0.6);
+				box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.35);
+			}
+			.popup-card__tweet-media img {
+				display: block;
+				width: 100%;
+				height: auto;
+				object-fit: cover;
+				max-height: 240px;
+			}
+			.popup-card__tweet-media figcaption {
+				margin: 0;
+				font-size: 0.78rem;
+				text-align: center;
+				color: rgba(148, 163, 184, 0.85);
+			}
 			.popup-card__message {
 				margin: 0;
 				padding: 14px 16px;
@@ -338,7 +352,7 @@
 				padding: 8px 0 4px;
 			}
 		</style>
-		<script type="module" crossorigin src="/assets/index-905d9249.js"></script>
+		<script type="module" crossorigin src="/assets/index-8381d507.js"></script>
 	</head>
 	<body>
 		<div id="map"></div>
