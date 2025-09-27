@@ -15,7 +15,7 @@ public sealed class TweetService(ILogger<TweetService> logger,IAiService aiServi
     {
         await boxRepository.GetBoxElseThrow(boxId);
         using MemoryStream stream = new(Convert.FromBase64String(request.ImageBase64));
-
+        
         AIResponse? response = null;
         try
         {
@@ -27,8 +27,9 @@ public sealed class TweetService(ILogger<TweetService> logger,IAiService aiServi
             logger.LogError(e, e.Message);
         }
         
+        using MemoryStream stream2 = new(Convert.FromBase64String(request.ImageBase64));
         string fileName = Guid.CreateVersion7().ToString();
-        await blobClient.UploadData(fileName, stream);
+        await blobClient.UploadData(fileName, stream2);
         TweetEntity entity = new()
         {
             BirdType = request.BirdType ?? response?.BirdType,
